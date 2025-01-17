@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { errorHandler } = require("./Controllers/e_CommerceController");
-const e_CommerceRoutes_1 = require("./Routes/e_CommerceRoutes");
+const product_Routes_1 = require("./Routes/product_Routes");
 const path = require("path");
 const app = express();
 require("dotenv").config();
@@ -26,9 +26,9 @@ db.once("open", function () {
 app.get("/", (_, res) => {
     res.send("Server is working");
 });
-app.use("/", e_CommerceRoutes_1.router);
+app.use("/", product_Routes_1.router);
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 app.use(errorHandler);
-app.listen(process.env.PORT || 3321, () => {
+app.listen(process.env.PORT || 3322, () => {
     console.log("Server is running on port 3322");
 });

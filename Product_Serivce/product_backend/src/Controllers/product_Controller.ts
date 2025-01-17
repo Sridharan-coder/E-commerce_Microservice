@@ -6,7 +6,7 @@ import {
   deleteProductDetails,
   getProductByIdDetails,
   getProductByTypeDetails
-} from "../Services/e_CommerceServices";
+} from "../Services/product_Services";
 import { Request, Response } from "express";
 import { CustomError, DBInterfaces } from "../fileInterfaces";
 const jwt = require('jsonwebtoken');
@@ -18,8 +18,6 @@ export const errorHandler = async (err: CustomError.Error, req: Request, res: Re
     message: err.message || "Internal Server Error",
   });
 };
-
-
 
 export const addProducts = async (req: Request | any, res: Response, next: Function) => {
   try {

@@ -5,7 +5,7 @@ import { addProducts,
     deleteProduct, 
     getProductById, 
     getProductByType
-} from "../Controllers/e_CommerceController";
+} from "../Controllers/product_Controller";
 
 import {upload} from "../utils/upload";
 export const router=express.Router()
