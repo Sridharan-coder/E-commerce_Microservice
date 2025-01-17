@@ -1,5 +1,6 @@
 package com.example.buyerStructure.jwtValidation;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,7 @@ public String generateToken(BuyerDetails buyerDetails) {
 	private SecretKey getKey() {
 
 		byte[] key = Decoders.BASE64.decode(SECRET_KEY);
+		System.out.print("secretkey base64 decoded : "+Keys.hmacShaKeyFor(key).getAlgorithm());
 		return Keys.hmacShaKeyFor(key);
 	}
 

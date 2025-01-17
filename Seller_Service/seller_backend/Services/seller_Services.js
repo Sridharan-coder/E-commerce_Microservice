@@ -1,7 +1,4 @@
-
-
 const { Seller} = require("../Models/schema")
-
 
 const createSeller = async (content) => {
     return await Seller.create(content);

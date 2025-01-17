@@ -1,5 +1,3 @@
-const path = require("path")
-const fs = require("fs");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
@@ -9,8 +7,6 @@ const transporter = nodemailer.createTransport({
         pass: "yaoc roqr wcoe hiex",
     },
 });
-
-
 
 const SendingTheMail = (req, res) => {
     
@@ -24,7 +20,6 @@ const SendingTheMail = (req, res) => {
         subject: "Otp verification for E-commerce website",
         text: `Otp: ${otp} has been recieved`
     };
-
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {

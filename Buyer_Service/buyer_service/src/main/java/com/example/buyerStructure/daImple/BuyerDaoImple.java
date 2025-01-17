@@ -204,6 +204,7 @@ public class BuyerDaoImple implements BuyerDao{
 
 			try {
 
+				System.out.println("==>");
 				Authentication authentication = authManager.authenticate(
 						new UsernamePasswordAuthenticationToken("user-"+buyerDetails.getU_emailAddress(), buyerDetails.getU_password()));
 				if (authentication.isAuthenticated()) {

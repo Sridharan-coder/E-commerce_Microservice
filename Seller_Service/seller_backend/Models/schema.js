@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
 const sellerInfo = new Schema({
     s_id: {
         type: Number,
@@ -25,7 +24,6 @@ const sellerInfo = new Schema({
         type: String,
         required: true
     }
-
 })
 
 const Seller = mongoose.model("Seller", sellerInfo)

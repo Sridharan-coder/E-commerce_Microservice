@@ -37,20 +37,44 @@ public class MyUserDetailService implements UserDetailsService {
 
 	@Transactional
 	private UserDetails userInfo(String username) {
-
+		
+		Integer u_id=0;
+		try {
+			Integer.parseInt(username);
+			u_id=Integer.parseInt(username);
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 		BuyerDetails buyer;
-
-		System.err.println("Myuser Details line 42 : " + username + "------>Roles => "
-				+ buyerRepository.findById(Integer.parseInt(username)).orElseThrow(() -> new EntityNotFoundException("User not found")));
-		buyer = buyerRepository.findById(Integer.parseInt(username)).orElseThrow(() -> new EntityNotFoundException("User not found"));
-		System.err.println("Myuser Details line 95 : " + buyer.toString());
-		buyer.getSomeLazyLoadedField();
-		if (buyer.getU_id() == Integer.parseInt(username)) {
-			System.out.println("Myuser Details line 97 : " + "username --> " + buyer.toString());
-			return User.withUsername(buyer.getU_emailAddress()).password(buyer.getU_password())
-					.authorities(Collections.emptyList()).build();
-		} else {
-			throw new UsernameNotFoundException("Something went wrong");
+		
+		
+		if(u_id!=0) {
+			System.err.println("Myuser Details line 42 : " + username + "------>Roles => "
+					+ buyerRepository.findById(Integer.parseInt(username)).orElseThrow(() -> new EntityNotFoundException("User not found")));
+			System.out.println("+++++>");
+			buyer = buyerRepository.findById(Integer.parseInt(username)).orElseThrow(() -> new EntityNotFoundException("User not found"));
+			System.err.println("Myuser Details line 95 : " + buyer.toString());
+			buyer.getSomeLazyLoadedField();
+			if (buyer.getU_id() == Integer.parseInt(username)) {
+				System.out.println("Myuser Details line 97 : " + "username --> " + buyer.toString());
+				return User.withUsername(buyer.getU_emailAddress()).password(buyer.getU_password())
+						.authorities(Collections.emptyList()).build();
+			} else {
+				throw new UsernameNotFoundException("Something went wrong");
+			}
+		}
+		else {
+			
+			buyer =  buyerRepository.findByEmail(username);
+			if (buyer.getU_emailAddress().equals(username)) {
+				System.out.println("Myuser Details line 109 : "+"Userssssss-------->"+username);
+				return User.withUsername(buyer.getU_emailAddress()) 
+						.password(buyer.getU_password())
+						.authorities(Collections.emptyList()).build();
+			} else {
+				throw new UsernameNotFoundException("User not found");
+			}
 		}
 
 	}

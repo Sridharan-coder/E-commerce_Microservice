@@ -1,5 +1,8 @@
 
-const {createSeller, updateSellerDetails, deleteSellerDetails, getSellerDetails, getSellerLogin } = require("../Services/seller_Services");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const { createSeller, updateSellerDetails, deleteSellerDetails, getSellerDetails, getSellerLogin } = require("../Services/seller_Services");
 
 const errorHandler = async (err, req, res, next) => {
   console.error(err);
@@ -9,12 +12,13 @@ const errorHandler = async (err, req, res, next) => {
   });
 };
 
-
 const addSeller = async (req, res, next) => {
   try {
     const sellerInfo = req.body;
     const s_id = Math.floor(Math.random() * 10000)
     sellerInfo["s_id"] = s_id;
+    sellerInfo["s_password"] = await bcrypt.hash(sellerInfo.s_password, 12);
+
     await createSeller(sellerInfo);
 
     res.header("Access-Control-Allow-Origin: *");
@@ -57,9 +61,9 @@ const deleteSeller = async (req, res, next) => {
 }
 
 const getSeller = async (req, res, next) => {
+  console.log("seller in")
   try {
     const s_id = Number(req.params["s_id"]);
-
     const seller = await getSellerDetails(s_id);
     res.status(200).json({
       success: true,
@@ -73,17 +77,22 @@ const getSeller = async (req, res, next) => {
 
 const sellerLogin = async (req, res, next) => {
   try {
+    
     const s_emailAddress = req.body.s_emailAddress;
-
     const seller = await getSellerLogin(s_emailAddress);
-
-
-    if (seller && seller.s_password === req.body.s_password) {
-
+    console.log("Seller login entered",seller)
+    // Debug log to check the passwords 
+    console.log("Stored password:", seller.s_password); 
+    console.log("Provided password:", req.body.s_password);
+    const match = await bcrypt.compare( req.body.s_password,seller.s_password);
+    
+    if (match) {
+      const token=generateToken({s_emailAddress:seller.s_emailAddress,s_name:seller.s_name,s_id:seller.s_id.toString()})
       res.status(200).json({
         success: true,
         message: "Login successfully",
-        seller
+        seller,
+        token
       });
     }
     else {
@@ -98,6 +107,20 @@ const sellerLogin = async (req, res, next) => {
     next(error);
   }
 
+}
+
+const generateToken=(sellerDetails)=> {
+  const claims = {
+    name: sellerDetails.s_name,
+    email: sellerDetails.s_emailAddress,
+    iat: Math.floor(Date.now() / 1000)
+  };
+  const token = jwt.sign(claims, process.env.JWT,
+    {
+      subject: sellerDetails.s_id,
+      expiresIn: '30m'
+    });
+  return token;
 }
 
 
