@@ -27,7 +27,7 @@ const BestOfElectronics = () => {
     try {
       async function fetchData() {
         await axios
-          .get(`http://localhost:3321/product/getProductByType/electronics`)
+          .get(`http://localhost:3322/product/getProductByType/electronics`)
           .then((response) => {
             console.log(response);
             setProducts(response.data.products.slice(0, 5))

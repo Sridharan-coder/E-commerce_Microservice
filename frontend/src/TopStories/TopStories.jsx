@@ -5,7 +5,6 @@ import Link from "antd/es/typography/Link";
 const TopStories = () => {
 
     return (
-
         <>
             <Row className="topStories">
                 <Typography className="brandDirectory brandDirectoryTitle">Top Stories : Brand Directory</Typography>

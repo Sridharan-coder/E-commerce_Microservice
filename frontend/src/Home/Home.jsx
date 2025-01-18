@@ -137,10 +137,16 @@ function Home() {
         },
         {
             key: "cart",
-            icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} /> <span style={{ color: "red", position: "absolute", paddingLeft: 7, paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
+            icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} /> <span style={{ position: "absolute", paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
             label: (
                 <>
-                    Cart
+                    <a
+                        href="http://localhost:3000/viewcart"
+                        target="_self"
+                        rel="noopener noreferrer"
+                    >
+                        Cart
+                    </a>
                 </>
             ),
         },
@@ -214,13 +220,12 @@ function Home() {
             label: (
                 <>
                     <a
-                        href="https://ant.design"
-                        target="_blank"
+                        href="http://localhost:3000/viewcart"
+                        target="_self"
                         rel="noopener noreferrer"
                     >
                         Cart
                     </a>
-                    <span>{ }</span>
                 </>
             ),
         },

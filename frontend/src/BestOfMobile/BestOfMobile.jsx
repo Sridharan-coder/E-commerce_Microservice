@@ -27,7 +27,7 @@ const BestOfMobile = () => {
         try {
             async function fetchData() {
                 await axios
-                    .get(`http://localhost:3321/product/getProductByType/mobile`)
+                    .get(`http://localhost:3322/product/getProductByType/mobile`)
                     .then((response) => setProducts(response.data.products.slice(0, 5)))
                     .catch((error) => console.error(error.response.data.message));
             }

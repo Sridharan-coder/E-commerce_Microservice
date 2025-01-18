@@ -22,7 +22,7 @@ const SearchedProduct = () => {
 
 
         async function fetchData() {
-            await axios.get(`http://localhost:3321/product/getProductByType/${type}`)
+            await axios.get(`http://localhost:3322/product/getProductByType/${type}`)
                 .then(response => setProducts(response.data.products))
                 .catch(error => console.error(error.response.data.message))
         }

@@ -215,7 +215,7 @@ const Cart = () => {
     const onRegister = async (values) => {
 
         await axios
-            .post("http://localhost:3321/seller/createSeller", values, {
+            .post("http://localhost:3323/seller/createSeller", values, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -290,7 +290,7 @@ const Cart = () => {
                     const tempOrdercount = [...orderCount]
                     const tempOrderPrice = [...orderPrice]
                     buyerInfo.u_carts.forEach(async (item) => {
-                        await axios.get(`http://localhost:3321/product/getProductById/${item}`)
+                        await axios.get(`http://localhost:3322/product/getProductById/${item}`)
                             .then(response => {
                                 tempProduct.push(response.data.product)
                                 tempOrdercount.push(response.data.product.p_stock ? 1 : 0)
@@ -311,7 +311,7 @@ const Cart = () => {
         else {
             try {
                 async function fetchdata() {
-                    await axios.get(`http://localhost:3321/product/getProductById/${newProduct}`)
+                    await axios.get(`http://localhost:3322/product/getProductById/${newProduct}`)
                         .then(response => {
                             setBuyerInfo({ ...buyerInfo, u_carts: [...buyerInfo.u_carts, newProduct] })
                             SetProductDetails([...productDetails, response.data.product])

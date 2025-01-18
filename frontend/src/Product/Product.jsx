@@ -141,9 +141,9 @@ const Product = () => {
         },
         {
             key: 'cart',
-            icon: <PiShoppingCart size={20} color='white' />,
+            icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} color="white" /> <span style={{position: "absolute", paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
             label: (
-                <a href="https://ant.design" target="_blank" rel="noopener noreferrer" >
+                <a href="http://localhost:3000/viewcart" target="_self" rel="noopener noreferrer" >
                     Cart
                 </a>
             ),
@@ -215,11 +215,11 @@ const Product = () => {
         },
         {
             key: "cart",
-            icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} color="white" /> <span style={{ color: "red", position: "absolute", paddingLeft: 7, paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
+            icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} color="white" /> <span style={{position: "absolute", paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
             label: (
-                <>
+                <a href="http://localhost:3000/viewcart" target="_self" rel="noopener noreferrer" >
                     Cart
-                </>
+                </a>
             ),
         },
         {
@@ -315,7 +315,7 @@ const Product = () => {
     const onRegister = async (values) => {
 
         await axios
-            .post("http://localhost:3321/seller/createSeller", values, {
+            .post("http://localhost:3323/seller/createSeller", values, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -345,7 +345,7 @@ const Product = () => {
 
     const handleBuyNow = () => {
         async function fetchData() {
-            await axios.get(`http://localhost:3321/product/getProductById/${searchParams.get("id")}`)
+            await axios.get(`http://localhost:3322/product/getProductById/${searchParams.get("id")}`)
                 .then(response => navigate("/payment", { state: { productDetails: [response.data.product] } }))
                 .catch(error => console.error(error.response.data.message))
         }
@@ -381,7 +381,7 @@ const Product = () => {
         try {
 
             async function fetchData() {
-                await axios.get(`http://localhost:3321/product/getProductById/${searchParams.get("id")}`)
+                await axios.get(`http://localhost:3322/product/getProductById/${searchParams.get("id")}`)
                     .then(response => setProduct(response.data.product))
                     .catch(error => console.error(error.response.data.message))
             }

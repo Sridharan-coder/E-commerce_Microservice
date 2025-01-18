@@ -27,7 +27,7 @@ const BestOfGrocery = () => {
         try {
             async function fetchData() {
                 await axios
-                    .get(`http://localhost:3321/product/getProductByType/grocery`,{
+                    .get(`http://localhost:3322/product/getProductByType/grocery`,{
                         "Authorization":""
                     })
                     .then((response) => setProducts(response.data.products.slice(0, 5)))

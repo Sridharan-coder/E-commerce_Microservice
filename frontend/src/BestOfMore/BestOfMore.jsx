@@ -27,7 +27,7 @@ const BestOfMore = () => {
         try {
             async function fetchData() {
                 await axios
-                    .get(`http://localhost:3321/product/getProductByType/beautyToys&More`)
+                    .get(`http://localhost:3322/product/getProductByType/beautyToys&More`)
                     .then((response) => setProducts(response.data.products.slice(0, 5)))
                     .catch((error) => console.error(error.response.data.message));
             }

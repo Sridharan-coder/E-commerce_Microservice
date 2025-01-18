@@ -160,7 +160,7 @@ const Seller = () => {
 
     const encoded = base64.encode(values.s_emailAddress+ ':' + values.s_password);
     console.log(encoded,"--->",values.s_emailAddress+ ':' + values.s_password);
-    await axios.post(`http://localhost:3321/seller/sellerLogin`, values, {
+    await axios.post(`http://localhost:3323/seller/sellerLogin`, values, {
         headers: {
           "Content-Type": "application/json"
         },
@@ -182,7 +182,7 @@ const Seller = () => {
   const onRegister = async (values) => {
 
     await axios
-      .post("http://localhost:3321/seller/createSeller", values, {
+      .post("http://localhost:3323/seller/createSeller", values, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -214,7 +214,7 @@ const Seller = () => {
       const encoded = base64.encode(sellerInfo.s_emailAddress+ ':' + sellerInfo.s_password);
     console.log(encoded,"--->",sellerInfo.s_emailAddress+ ':' + sellerInfo.s_password);
       axios
-        .post("http://localhost:3321/product/addProduct", formData, {
+        .post("http://localhost:3322/product/addProduct", formData, {
           headers: {
             Authorization: `Basic ${encoded}`,
             "Content-Type": "multipart/form-data",

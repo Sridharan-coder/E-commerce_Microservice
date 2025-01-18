@@ -15,6 +15,15 @@
   display: none;
 }
 
+#cardCount{
+  border-radius: 50% !important;
+  height: 7px;
+  width: 14px;
+  transform: translate(5px,-10px) !important;
+  color: whitesmoke !important;
+  background-color: rgba(255, 0, 0, 0.879) !important;
+  padding-left: 0px !important;
+}
 
 /* .arrow {
   border: solid black; */

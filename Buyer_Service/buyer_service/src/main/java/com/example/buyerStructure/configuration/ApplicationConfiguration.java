@@ -81,12 +81,13 @@ public class ApplicationConfiguration {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
 		provider.setUserDetailsService(userDetailsService);
+		System.out.println("line : 84 apllication configuration : "+provider.toString());
 		return provider;
 	}
 
 	@Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-
+		System.out.println("line : 90 apllication configuration : "+config.toString());
 		return config.getAuthenticationManager();
 	}
 

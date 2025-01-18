@@ -123,15 +123,21 @@ public class BuyerDaoImple implements BuyerDao{
 				return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 			}
 			
+			user.setU_name(UpdatedBuyerDetails.getU_name());
+			user.setU_emailAddress(UpdatedBuyerDetails.getU_emailAddress());
+			user.setU_password(encoder.encode(UpdatedBuyerDetails.getU_password()));
+			user.setU_phoneNumber(UpdatedBuyerDetails.getU_phoneNumber());
+			user.setU_carts(UpdatedBuyerDetails.getU_carts());
+			user.setU_whitelist(UpdatedBuyerDetails.getU_whitelist());
 			
-			
-			BuyerDetails updated=buyerRepository.save(UpdatedBuyerDetails);
+			BuyerDetails updated=buyerRepository.save(user);
 			
 			if (updated == null) {
 				map.put("success", true);
 				map.put("message", "User Not Found");
 				return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 			}
+			System.out.println("line 134 : "+updated.toString());
 			map.put("success", true);
 			map.put("message", "User updated successfully");
 			return new ResponseEntity<>(map, HttpStatus.OK);
@@ -203,10 +209,9 @@ public class BuyerDaoImple implements BuyerDao{
 //		}
 
 			try {
-
-				System.out.println("==>");
 				Authentication authentication = authManager.authenticate(
 						new UsernamePasswordAuthenticationToken("user-"+buyerDetails.getU_emailAddress(), buyerDetails.getU_password()));
+				System.out.println("==>");
 				if (authentication.isAuthenticated()) {
 					map.put("success", true);
 					map.put("message", "Login successfully");
