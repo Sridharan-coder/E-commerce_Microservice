@@ -6,6 +6,7 @@ import ProductSearch from './ProductSearch/ProductSearch';
 import Product from './Product/Product';
 import Cart from './Cart/Cart';
 import PaymentPage from './PaymentPage/PaymentPage';
+import Maintance from './Maintance/Maintance';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path='/item/:p_type' element={<Product />} />
         <Route path='/viewcart' element={<Cart />} />
         <Route path='/payment' element={<PaymentPage />} />
+        <Route path='/maintance' element={<Maintance/>}/>
       </Routes>
     </>
   )

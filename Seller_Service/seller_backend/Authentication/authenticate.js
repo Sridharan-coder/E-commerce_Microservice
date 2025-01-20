@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
         req.user = user;
         next();
     } catch (error) {
-        console.log("error begin ", error)
+        console.log("Authentication Error --> ", error)
         res.status(401).json({
             status: 'fail',
             message: 'Unauthorized!',

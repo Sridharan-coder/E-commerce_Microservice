@@ -3,7 +3,6 @@ package com.example.buyerStructure.configuration;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

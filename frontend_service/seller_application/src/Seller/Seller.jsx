@@ -20,15 +20,25 @@ import base64 from 'base-64';
 const Seller = () => {
   const navigate = useNavigate();
 
-  // const buyerInfo = useSelector(detail => detail.sellerAuthentication);
+  const onPageNavigator = () => {
+    axios.get("http://localhost:3000")
+      .then(response => {
+        console.log(response)
+        if (response.status === 200)
+          window.location.href = "http://localhost:3000"
+        else {
+          console.log(response)
+          alert("Something went Wrong")
+        }
+      })
+      .catch(error => navigate("/maintance"))
+  }
 
   const items = [
     {
       key: "logo",
       label: (
-        <a href="http://localhost:3000" rel="noopener noreferrer">
-          <img alt="logo" srcSet={logo_flipkart_210} width={"95vw"} />
-        </a>
+        <img alt="logo" srcSet={logo_flipkart_210} width={"95vw"} onClick={() => onPageNavigator()} />
       ),
     },
     {
@@ -45,9 +55,7 @@ const Seller = () => {
     {
       key: "logo",
       label: (
-        <a href="http://localhost:3000" rel="noopener noreferrer">
-          <img alt="logo" srcSet={logo_flipkart_210} width={"95vw"} />
-        </a>
+        <img alt="logo" srcSet={logo_flipkart_210} width={"95vw"} onClick={() => onPageNavigator()} />
       ),
     },
     {

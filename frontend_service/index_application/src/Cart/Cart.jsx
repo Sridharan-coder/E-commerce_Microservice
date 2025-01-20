@@ -1,6 +1,5 @@
 import { Button, Col, Form, Input, Menu, Modal, Row } from "antd";
 import { useEffect, useState } from "react";
-import { AiOutlineRise, AiOutlineShop } from "react-icons/ai";
 import { BsBoxSeam } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { CiSearch } from "react-icons/ci";
@@ -8,29 +7,27 @@ import { FiLogOut } from "react-icons/fi";
 import { GoCreditCard, GoTag } from "react-icons/go";
 import { IoHeartOutline, IoNotificationsOutline } from "react-icons/io5";
 import { LuCross } from "react-icons/lu";
-import { PiDownloadSimpleThin, PiHeadsetLight, PiShoppingCart } from "react-icons/pi";
-import { RiMore2Line } from "react-icons/ri";
 import { TbCoinRupeeFilled } from "react-icons/tb";
 
 import Flipkart_logo_white from "../Assest/Flipkart_logo_white.png"
 import axios from "axios";
-import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { loginBuyerDetails, logoutBuyerDetails } from "../Redux/Action_Create/ActionCreate";
 
 
 const Cart = () => {
 
-    const [buyer, SetBuyer] = useState({})
     const [productDetails, SetProductDetails] = useState([])
     const [orderCount, setorderCount] = useState([]);
     const [orderPrice, setOrderPrice] = useState([])
+
+    // eslint-disable-next-line no-unused-vars
     const [discount, setDiscount] = useState(0)
     const [totalPrice, setTotalPrice] = useState(0)
 
     const navigate = useNavigate()
     const location = useLocation()
-    const param = useParams("newProduct")
     const [newProduct, setNewProduct] = useState(location.state ? location.state.p_id : "");
 
     const [buyerInfo, setBuyerInfo] = useState(useSelector(detail => detail.buyerAuthentication));
@@ -279,7 +276,6 @@ const Cart = () => {
         if (buyerInfo.u_loggedIn) {
             if (newProduct && !buyerInfo.u_carts.includes(newProduct))
                 buyerInfo["u_carts"] = [...buyerInfo.u_carts, newProduct]
-            SetBuyer(buyerInfo)
 
             try {
                 async function fetchdata() {
@@ -324,8 +320,8 @@ const Cart = () => {
 
             }
         }
+        // eslint-disable-next-line
     }, [])
-
 
     useEffect(() => {
         const amt = orderPrice.reduce((acc, curr, index) => {
@@ -333,7 +329,6 @@ const Cart = () => {
         }, 0)
         setTotalPrice(amt)
     }, [discount, orderPrice, orderCount, buyerInfo])
-
 
 
     return (

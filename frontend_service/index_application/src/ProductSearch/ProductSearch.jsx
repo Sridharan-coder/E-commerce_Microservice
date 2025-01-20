@@ -13,7 +13,6 @@ import {
   PiHeadsetLight,
   PiShoppingCart,
 } from "react-icons/pi";
-import { RiMore2Line } from "react-icons/ri";
 import { TbCoinRupeeFilled } from "react-icons/tb";
 
 import Flipkart_logo_white from "../Assest/Flipkart_logo_white.png";
@@ -21,7 +20,6 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginBuyerDetails, logoutBuyerDetails } from "../Redux/Action_Create/ActionCreate";
-import { FaHeart } from "react-icons/fa6";
 
 const { Meta } = Card;
 
@@ -45,7 +43,7 @@ const ProductSearch = () => {
     {
       key: "logo",
       label: (
-        <a href="/#" rel="noopener noreferrer">
+        <a href="/" rel="noopener noreferrer">
           <img
             alt="logo"
             srcSet={Flipkart_logo_white}
@@ -149,26 +147,12 @@ const ProductSearch = () => {
     {
       key: "cart",
       icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} color="white" /> <span style={{ position: "absolute", paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
-      label: (
-        <>
-          Cart
-        </>
-      ),
+      label: "Cart"
     },
     {
       key: "becomeSeller",
       icon: <AiOutlineShop size={20} color="white" />,
-      label: (
-        <>
-            <a
-                href="http://localhost:3001/seller"
-                target="_self"
-                rel="noopener noreferrer"
-            >
-                Become a Seller
-            </a>
-        </>
-    ),
+      label: "Become a Seller"
     },
   ];
 
@@ -176,7 +160,7 @@ const ProductSearch = () => {
     {
       key: "logo",
       label: (
-        <a href="/#" rel="noopener noreferrer">
+        <a href="/" rel="noopener noreferrer">
           <img
             alt="logo"
             srcSet={Flipkart_logo_white}
@@ -234,26 +218,12 @@ const ProductSearch = () => {
     {
       key: "cart",
       icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} color="white" /> <span style={{ position: "absolute", paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
-      label: (
-        <>
-          Cart
-        </>
-      ),
+      label: "Cart"
     },
     {
       key: "becomeSeller",
       icon: <AiOutlineShop size={20} color="white" />,
-      label: (
-        <>
-            <a
-                href="http://localhost:3001/seller"
-                target="_self"
-                rel="noopener noreferrer"
-            >
-                Become a Seller
-            </a>
-        </>
-    ),
+      label: "Become a Seller"
     },
   ];
 
@@ -299,6 +269,22 @@ const ProductSearch = () => {
         u_loggedIn: false
       })
     }
+    else if (e.key === "becomeSeller") {
+      axios.get("http://localhost:3001")
+          .then(response => {
+              console.log(response)
+              if (response.status === 200)
+                  window.location.href = "http://localhost:3001/seller"
+              else {
+                  console.log(response)
+                  alert("Something went Wrong")
+              }
+          })
+          .catch(error => navigate("/maintance"))
+  }
+  else if (e.key === "cart") {
+      navigate("/viewcart");
+  }
   };
 
 

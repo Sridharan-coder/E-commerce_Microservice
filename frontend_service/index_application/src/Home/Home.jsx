@@ -2,8 +2,6 @@ import { Button, Col, Form, Input, Menu, Modal, Row } from "antd";
 
 import Flipkart_Logo_1 from "../Assest/Flipkart_Logo_1.png";
 
-// import logo_flipkart_210 from "../Assest/"
-
 import { CiSearch } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { TbCoinRupeeFilled } from "react-icons/tb";
@@ -25,8 +23,7 @@ import Carousal from "../Carousal/Carousal";
 import Footer from "../Footer/Footer";
 import TopStories from "../TopStories/TopStories";
 import BestOfElectronics from "../BestOfElectronics/BestOfElectronics";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import ProductSearch from "../ProductSearch/ProductSearch";
+import { useNavigate } from "react-router-dom";
 import BestOfFashion from "../BestOfFashion/BestOfFashion";
 import BestOfGrocery from "../BesOfGrocery/BestOfGrocery";
 import BestOfMobile from "../BestOfMobile/BestOfMobile";
@@ -40,15 +37,10 @@ function Home() {
 
 
     const [isRegisterOpen, setIsRegisterOpen] = useState(false)
-
     const [isLoginOpen, setIsLoginOpen] = useState(false)
     const [buyerInfo, setBuyerInfo] = useState(useSelector(item => item.buyerAuthentication))
 
-
     const navigate = useNavigate();
-    const location = useLocation();
-
-    // const buyerInfo = useSelector(item => item.buyerAuthentication)
 
     const dispatch = useDispatch();
 
@@ -138,32 +130,12 @@ function Home() {
         {
             key: "cart",
             icon: <span style={{ position: "realtive" }}><PiShoppingCart size={20} /> <span style={{ position: "absolute", paddingBottom: 10, fontWeight: 700 }} id="cardCount">{buyerInfo.u_carts.length ? buyerInfo.u_carts.length : ""} </span></span>,
-            label: (
-                <>
-                    <a
-                        href="http://localhost:3000/viewcart"
-                        target="_self"
-                        rel="noopener noreferrer"
-                    >
-                        Cart
-                    </a>
-                </>
-            ),
+            label: "Cart",
         },
         {
             key: "becomeSeller",
             icon: <AiOutlineShop size={20} />,
-            label: (
-                <>
-                    <a
-                        href="http://localhost:3001/seller"
-                        target="_self"
-                        rel="noopener noreferrer"
-                    >
-                        Become a Seller
-                    </a>
-                </>
-            ),
+            label: "Become a Seller"
         },
         {
             key: "more",
@@ -197,7 +169,7 @@ function Home() {
         {
             key: "logo",
             label: (
-                <a href="/#" rel="noopener noreferrer">
+                <a href="/" rel="noopener noreferrer">
                     <img
                         alt="logo"
                         srcSet={Flipkart_Logo_1}
@@ -227,32 +199,12 @@ function Home() {
         {
             key: "cart",
             icon: <PiShoppingCart size={20} />,
-            label: (
-                <>
-                    <a
-                        href="http://localhost:3000/viewcart"
-                        target="_self"
-                        rel="noopener noreferrer"
-                    >
-                        Cart
-                    </a>
-                </>
-            ),
+            label: "Cart"
         },
         {
             key: "becomeSeller",
             icon: <AiOutlineShop size={20} />,
-            label: (
-                <>
-                    <a
-                        href="http://localhost:3001/seller"
-                        target="_self"
-                        rel="noopener noreferrer"
-                    >
-                        Become a Seller
-                    </a>
-                </>
-            ),
+            label: "Become a Seller"
         },
         {
             key: "more",
@@ -282,8 +234,10 @@ function Home() {
         },
     ];
 
+
+
     const onClick = (e) => {
-         if (e.key === "login") {
+        if (e.key === "login") {
 
             setIsRegisterOpen(false)
             setIsLoginOpen(true)
@@ -303,6 +257,22 @@ function Home() {
                 i_token: ""
             })
             navigate("/")
+        }
+        else if (e.key === "becomeSeller") {
+            axios.get("http://localhost:3001")
+                .then(response => {
+                    console.log(response)
+                    if (response.status === 200)
+                        window.location.href = "http://localhost:3001/seller"
+                    else {
+                        console.log(response)
+                        alert("Something went Wrong")
+                    }
+                })
+                .catch(error => navigate("/maintance"))
+        }
+        else if (e.key === "cart") {
+            navigate("/viewcart");
         }
     };
 
@@ -370,7 +340,7 @@ function Home() {
                     , {
                         headers: {
                             Authorization: `Bearer ${buyerInfo.u_token}`,
-                             Accept: "application/json"
+                            Accept: "application/json"
                         }
 
                     }
@@ -387,6 +357,8 @@ function Home() {
             }
         }
         updateData()
+        
+    // eslint-disable-next-line
     }, [])
 
 

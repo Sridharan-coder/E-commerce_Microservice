@@ -61,7 +61,6 @@ const deleteSeller = async (req, res, next) => {
 }
 
 const getSeller = async (req, res, next) => {
-  console.log("seller in")
   try {
     const s_id = Number(req.params["s_id"]);
     const seller = await getSellerDetails(s_id);
@@ -80,10 +79,7 @@ const sellerLogin = async (req, res, next) => {
     
     const s_emailAddress = req.body.s_emailAddress;
     const seller = await getSellerLogin(s_emailAddress);
-    console.log("Seller login entered",seller)
-    // Debug log to check the passwords 
-    console.log("Stored password:", seller.s_password); 
-    console.log("Provided password:", req.body.s_password);
+    
     const match = await bcrypt.compare( req.body.s_password,seller.s_password);
     
     if (match) {

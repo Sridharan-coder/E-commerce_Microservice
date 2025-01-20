@@ -8,6 +8,7 @@ import { addProducts,
 } from "../Controllers/product_Controller";
 
 import {upload} from "../utils/upload";
+
 export const router=express.Router()
 
 router.get("/product/getProductById/:p_id",getProductById)

@@ -18,10 +18,6 @@ const BestOfMobile = () => {
         navigate(`/item/${type}?name=${productData.p_name}&id=${productData.p_id}`);
     };
 
-    const viewMobile = () => {
-
-    }
-
     useEffect(() => {
 
         try {
