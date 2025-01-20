@@ -72,7 +72,18 @@ public String generateToken(BuyerDetails buyerDetails) {
 	}
 
 	private Claims extractAllClaims(String token) {
-		System.out.println("JWt servi9ce line 87 : "+Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload());
+		try {
+			
+			System.out.println("JWt servi9ce line 77 : "+Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload());
+		}
+		catch(Exception e) {
+			if(e.getMessage().startsWith("JWT expired")) {
+				System.err.println("\nJWT expired");
+			}
+			else {
+				System.err.println(e);
+			}
+		}
 		return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
 	}
 	
