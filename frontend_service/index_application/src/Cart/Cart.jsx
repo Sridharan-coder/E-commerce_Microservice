@@ -29,7 +29,6 @@ const Cart = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const [newProduct, setNewProduct] = useState(location.state ? location.state.p_id : "");
-
     const [buyerInfo, setBuyerInfo] = useState(useSelector(detail => detail.buyerAuthentication));
 
 
@@ -47,9 +46,9 @@ const Cart = () => {
         {
             key: 'logo',
             label: (
-                <a href="/#" rel='noopener noreferrer'>
+                <span>
                     <img alt="logo" srcSet={Flipkart_logo_white} width={"95vw"} style={{ marginTop: 8 }} />
-                </a>
+                </span>
 
             ),
         },
@@ -126,9 +125,9 @@ const Cart = () => {
         {
             key: 'logo',
             label: (
-                <a href="/#" rel='noopener noreferrer'>
+                <span>
                     <img alt="logo" srcSet={Flipkart_logo_white} width={"95vw"} style={{ marginTop: 8 }} />
-                </a>
+                </span>
             ),
         },
         {
@@ -157,17 +156,53 @@ const Cart = () => {
             setIsLoginOpen(true)
         }
         else if (e.key === "logout") {
-            dispatch(logoutBuyerDetails());
-            setBuyerInfo({
-                u_id: "",
-                u_name: "",
-                u_phoneNumber: "",
-                u_emailAddress: "",
-                u_password: '',
-                u_carts: [],
-                u_whitelist: [],
-                u_loggedIn: false
+            axios.get(`http://localhost:3321/user/userLogout`, {
+                withCredentials: true
             })
+                .then((response) => {
+                    dispatch(logoutBuyerDetails());
+                    setBuyerInfo({
+                        u_id: "",
+                        u_name: "",
+                        u_phoneNumber: "",
+                        u_emailAddress: "",
+                        u_password: '',
+                        u_carts: [],
+                        u_whitelist: [],
+                        u_loggedIn: false,
+                        u_token: ""
+                    })
+                    navigate("/");
+                })
+                .catch((error) => {
+                    console.error(error?.response?.data?.message);
+                    alert(error?.response?.data?.message);
+                })
+        }
+        else if (e.key === "becomeSeller") {
+            axios.get("http://localhost:3001")
+                .then(response => {
+                    if (response.status === 200)
+                        window.location.href = "http://localhost:3001/seller"
+                    else {
+                        alert("Something went Wrong")
+                    }
+                })
+                .catch(error => navigate("/maintance"))
+        }
+        else if (e.key === "myProfile") {
+            axios.get("http://localhost:3002")
+                .then(response => {
+                    if (response.status === 200)
+                        window.location.href = `http://localhost:3002/buyer?id=${buyerInfo.u_id}&token=${buyerInfo.u_token}`
+                    else {
+                        alert("Something went Wrong")
+                    }
+                })
+                .catch(error => navigate("/maintance"))
+        }
+        else if(e.key==="logo"){
+            navigate("/")
         }
     };
 
@@ -193,11 +228,10 @@ const Cart = () => {
                 },
             })
             .then((response) => {
-                console.log("response...", response);
 
-                dispatch(loginBuyerDetails(response.data.user));
+                dispatch(loginBuyerDetails({ ...response.data.user, u_token: response.data.token }));
                 alert(response.data.message);
-                setBuyerInfo({ ...response.data.user, u_loggedIn: true });
+                setBuyerInfo({ ...response.data.user, u_token: response.data.token, u_loggedIn: true });
                 setIsLoginOpen(false);
             })
             .catch((error) => {
@@ -233,56 +267,72 @@ const Cart = () => {
     }
 
 
-    const handleAddCartToUser = async () => {
-        await axios.put(`http://localhost:3321/user/updateUser/${buyerInfo.u_id}`, { ...buyerInfo, u_carts: [...new Set(buyerInfo.u_carts)] }, {
-            headers: {
-                Authorization: `Bearer ${buyerInfo.u_token}`,
-                "Content-Type": "application/json"
+    const handleAddCartToUser = async (newProduct) => {
+        if (buyerInfo.u_loggedIn) {
+            if (!buyerInfo.u_carts.includes(newProduct)) {
+                await axios.put(`http://localhost:3321/user/updateUser/${buyerInfo.u_id}`, { ...buyerInfo, u_carts: [...new Set([...buyerInfo.u_carts,newProduct])] }, {
+                    headers: {
+                        Authorization: `Bearer ${buyerInfo.u_token}`,
+                        Accept: "application/json"
+                    }
+                })
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => console.error(error.response.data.message))
             }
-        })
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => console.error(error.response.data.message))
+            else {
+                alert("Product was alrady in the carts");
+            }
+        }
+        else {
+            setIsLoginOpen(true);
+        }
     }
 
     const handleDeleteCartToUser = async (value) => {
 
-        if (buyerInfo.u_carts.length) {
-            const tempBuyer = buyerInfo;
-            tempBuyer.u_carts = tempBuyer.u_carts.filter(item => item !== value)
-            // console.log(value, "=========", tempBuyer.u_carts);
+        if (buyerInfo.u_loggedIn) {
+            if (buyerInfo.u_carts.length) {
+                const tempBuyer = buyerInfo;
+                tempBuyer.u_carts = tempBuyer.u_carts.filter(item => item !== value)
 
 
-            await axios.put(`http://localhost:3321/user/updateUser/${buyerInfo.u_id}`, tempBuyer, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    console.log(response);
-                    setBuyerInfo(tempBuyer)
-                    dispatch(loginBuyerDetails(tempBuyer));
+                await axios.put(`http://localhost:3321/user/updateUser/${buyerInfo.u_id}`, tempBuyer, {
+                    headers: {
+                        Authorization: `Bearer ${buyerInfo.u_token}`,
+                        "Content-Type": "application/json"
+                    }
                 })
-                .catch(error => console.error(error.response.data.message))
+                    .then(response => {
+                        setBuyerInfo(tempBuyer)
+                        dispatch(loginBuyerDetails(tempBuyer));
+                    })
+                    .catch(error => console.error(error.response.data.message))
+            }
+            else {
+                setNewProduct(0)
+                SetProductDetails([])
+            }
         }
         else {
-            setNewProduct(0)
-            SetProductDetails([])
+            setIsLoginOpen(true);
         }
     }
 
     useEffect(() => {
         if (buyerInfo.u_loggedIn) {
-            if (newProduct && !buyerInfo.u_carts.includes(newProduct))
-                buyerInfo["u_carts"] = [...buyerInfo.u_carts, newProduct]
+            let tempInfo=buyerInfo;
+            if (newProduct && !buyerInfo.u_carts.includes(newProduct)){
+                tempInfo={ ...buyerInfo, u_carts: [...buyerInfo.u_carts, newProduct] }
+            }
 
             try {
                 async function fetchdata() {
                     const tempProduct = [...productDetails]
                     const tempOrdercount = [...orderCount]
                     const tempOrderPrice = [...orderPrice]
-                    buyerInfo.u_carts.forEach(async (item) => {
+                    tempInfo.u_carts.forEach(async (item) => {
                         await axios.get(`http://localhost:3322/product/getProductById/${item}`)
                             .then(response => {
                                 tempProduct.push(response.data.product)
@@ -306,7 +356,6 @@ const Cart = () => {
                 async function fetchdata() {
                     await axios.get(`http://localhost:3322/product/getProductById/${newProduct}`)
                         .then(response => {
-                            setBuyerInfo({ ...buyerInfo, u_carts: [...buyerInfo.u_carts, newProduct] })
                             SetProductDetails([...productDetails, response.data.product])
                             setorderCount([...orderCount, 1])
                             setOrderPrice([...orderPrice, response.data.product.p_price])
@@ -321,7 +370,7 @@ const Cart = () => {
             }
         }
         // eslint-disable-next-line
-    }, [])
+    }, [buyerInfo])
 
     useEffect(() => {
         const amt = orderPrice.reduce((acc, curr, index) => {
@@ -363,7 +412,6 @@ const Cart = () => {
                         <Row style={{ flexDirection: "column" }} className="cartPlacement">
                             {productDetails.map((item, index) => {
                                 return (
-                                    <>
                                         <Row className="cartInfo" key={item.p_id}>
                                             <Col span={4}>
                                                 <img src={item.p_image} alt={item.p_name} width={120} height={120} />
@@ -371,10 +419,9 @@ const Cart = () => {
                                             <Col span={14}>
                                                 <Row style={{ fontWeight: 500, fontSize: 17, width: 500 }}>{item.p_name.charAt(0).toUpperCase() + item.p_name.slice(1)}</Row>
                                                 <Row style={{ paddingTop: 5, paddingBottom: 5 }}>Seller Id :
-                                                    {item.s_ids.map(vendor => {
+                                                    {item.s_ids.map((vendor,index) => {
                                                         return (
-
-                                                            <Row>{vendor}</Row>
+                                                            <Row key={vendor+""+index}>{vendor}</Row>
                                                         )
                                                     })}
                                                 </Row>
@@ -395,13 +442,12 @@ const Cart = () => {
                                                 </Col>
                                                 <Col >
                                                     <Row gutter={[30, 30]}>
-                                                        <Col onClick={() => handleAddCartToUser()}><Link style={{ color: "black", fontWeight: 600, fontSize: 16 }}>SAVE FOR LATER</Link></Col>
+                                                        <Col onClick={() => handleAddCartToUser(item.p_id)}><Link style={{ color: "black", fontWeight: 600, fontSize: 16 }}>SAVE FOR LATER</Link></Col>
                                                         <Col onClick={() => handleDeleteCartToUser(item.p_id)}><Link style={{ color: "black", fontWeight: 600, fontSize: 16 }}>REMOVE</Link></Col>
                                                     </Row>
                                                 </Col>
                                             </Row>
                                         </Row>
-                                    </>
                                 )
                             })}
                             <Row style={{ backgroundColor: "white", padding: 10 }} justify={"end"}>
@@ -524,7 +570,6 @@ const Cart = () => {
                                         </Form.Item>
                                     </Col>
                                 </Row>
-
                                 <Row>
                                     <Col span={24}>
                                         <Form.Item>

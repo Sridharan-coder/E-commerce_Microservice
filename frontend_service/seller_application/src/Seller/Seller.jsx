@@ -21,13 +21,11 @@ const Seller = () => {
   const navigate = useNavigate();
 
   const onPageNavigator = () => {
-    axios.get("http://localhost:3000")
+    axios.get("http://localhost:3000/")
       .then(response => {
-        console.log(response)
         if (response.status === 200)
-          window.location.href = "http://localhost:3000"
+          window.location.href = "http://localhost:3000/"
         else {
-          console.log(response)
           alert("Something went Wrong")
         }
       })
@@ -151,30 +149,39 @@ const Seller = () => {
       form1.resetFields();
       setIsRegisterOpen(true);
     } else if (e.key === "logout") {
-      dispatch(logoutSellerDetails());
-      setSellerInfo({
-        s_id: "",
-        s_name: "",
-        s_phoneNumber: "",
-        s_password: "",
-        s_emailAddress: "",
-        s_loggedIn: false,
-      });
+      axios.get(`http://localhost:3323/seller/sellerLogout`, {
+        withCredentials: true
+    })
+        .then((response) => {
+          dispatch(logoutSellerDetails());
+          setSellerInfo({
+            s_id: "",
+            s_name: "",
+            s_phoneNumber: "",
+            s_password: "",
+            s_emailAddress: "",
+            s_loggedIn: false,
+          });
+            navigate("/seller");
+        })
+        .catch((error) => {
+            console.error(error?.response?.data?.message);
+            alert(error?.response?.data?.message);
+        })
+     
       navigate("/seller");
     }
   };
 
   const onLogin = async (values) => {
 
-    const encoded = base64.encode(values.s_emailAddress + ':' + values.s_password);
-    console.log(encoded, "--->", values.s_emailAddress + ':' + values.s_password);
     await axios.post(`http://localhost:3323/seller/sellerLogin`, values, {
       headers: {
         "Content-Type": "application/json"
       },
+      withCredentials:true
     })
       .then((response) => {
-        console.log(response)
         dispatch(loginSellerDetails({ ...response.data.seller, s_token: response.data.token }));
         alert(response.data.message);
         setIsLoginOpen(false);
@@ -183,7 +190,7 @@ const Seller = () => {
       })
       .catch((error) => {
         console.log(error);
-        alert(error.response.data.message);
+        alert(error?.response?.data?.message);
       });
   };
 
@@ -219,12 +226,11 @@ const Seller = () => {
       });
 
       formData.append("s_ids", [sellerInfo.s_id]);
-      const encoded = base64.encode(sellerInfo.s_emailAddress + ':' + sellerInfo.s_password);
-      console.log(encoded, "--->", sellerInfo.s_emailAddress + ':' + sellerInfo.s_password);
+      
       axios
         .post("http://localhost:3322/product/addProduct", formData, {
           headers: {
-            Authorization: `Basic ${encoded}`,
+            Authorization: `Basic ${sellerInfo.s_token}`,
             "Content-Type": "multipart/form-data",
           },
         })

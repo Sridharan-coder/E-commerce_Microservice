@@ -24,6 +24,8 @@ import com.example.buyerStructure.jwtValidation.JWTServices;
 import com.example.buyerStructure.repository.BuyerRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -61,7 +63,7 @@ public class BuyerDaoImple implements BuyerDao{
 				map.put("message", "User not found");
 				return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 			}
-
+			
 			logger.info("Fetched User: {}", user);
 			map.put("success", true);
 			map.put("message", "User Fetched successfully");
@@ -125,7 +127,10 @@ public class BuyerDaoImple implements BuyerDao{
 			
 			user.setU_name(UpdatedBuyerDetails.getU_name());
 			user.setU_emailAddress(UpdatedBuyerDetails.getU_emailAddress());
-			user.setU_password(encoder.encode(UpdatedBuyerDetails.getU_password()));
+			
+			if(!(UpdatedBuyerDetails.getU_password().startsWith("$2a$12"))) 
+				user.setU_password(encoder.encode(UpdatedBuyerDetails.getU_password()));
+				
 			user.setU_phoneNumber(UpdatedBuyerDetails.getU_phoneNumber());
 			user.setU_carts(UpdatedBuyerDetails.getU_carts());
 			user.setU_whitelist(UpdatedBuyerDetails.getU_whitelist());
@@ -177,7 +182,7 @@ public class BuyerDaoImple implements BuyerDao{
 	}
 
 	@Override
-	public ResponseEntity<?> userLogin(BuyerDetails buyerDetails) {
+	public ResponseEntity<?> userLogin(BuyerDetails buyerDetails,HttpServletResponse response ) {
 		Map<String, Object> map = new LinkedHashMap<>();
 //		try {
 		BuyerDetails userTemp = buyerRepository.findByEmail(buyerDetails.getU_emailAddress());
@@ -217,6 +222,12 @@ public class BuyerDaoImple implements BuyerDao{
 					map.put("message", "Login successfully");
 					map.put("user", userTemp);
 					map.put("token",jwtServices.generateToken(userTemp));
+					Cookie cookie = new Cookie("u_token", jwtServices.generateToken(userTemp));
+					cookie.setMaxAge(5 * 360); // expires in 7 days
+					cookie.setSecure(true);
+					cookie.setHttpOnly(true);
+					cookie.setPath("/");
+					response.addCookie(cookie);
 					return new ResponseEntity<>(map, HttpStatus.OK);
 				} else {
 					map.put("success", true);
@@ -230,5 +241,21 @@ public class BuyerDaoImple implements BuyerDao{
 				map.put("message", e.getMessage());
 				return new ResponseEntity<>(map, HttpStatus.METHOD_NOT_ALLOWED);
 			}
+	}
+
+
+	
+	@Override
+	public ResponseEntity<?> userLogout(HttpServletResponse response) {
+		Map<String, Object> map = new LinkedHashMap<>();
+		map.put("message","User Logged-out succesfully");
+		map.put("success", true);
+		Cookie cookie = new Cookie("u_token", null);
+		cookie.setMaxAge(0); // expires in 7 days
+		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		return new ResponseEntity<>(map,HttpStatus.OK);
 	}
 }

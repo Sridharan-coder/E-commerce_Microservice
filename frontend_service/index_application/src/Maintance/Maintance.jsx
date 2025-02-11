@@ -2,6 +2,10 @@ import './Maintance.css';
 
 const Maintance = () => {
 
+  const handleNaviagate=()=>{
+
+  }
+
     return (
         <div className='maintanceBody'>
           <article className='maintanceArticle'>
@@ -27,7 +31,7 @@ const Maintance = () => {
               <p>
                 Sorry for the inconvenience. We’re performing some maintenance at the moment. If you need to, 
                 you can check on{' '}
-                <a href="/" className='PageNavigator'>Our Products</a> otherwise, 
+                <span onClick={()=>handleNaviagate} className='PageNavigator'>Our Products</span> otherwise, 
                 we’ll be back up shortly!
               </p>
               <b>&mdash; Developer Team</b>

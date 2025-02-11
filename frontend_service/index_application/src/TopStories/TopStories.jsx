@@ -1,5 +1,4 @@
 import { Row, Typography } from "antd";
-import Link from "antd/es/typography/Link";
 
 
 const TopStories = () => {
@@ -173,7 +172,7 @@ const TopStories = () => {
                         Sleek TVs, power-saving refrigerators, rapid-cooling ACs, resourceful washing machines discover everything you need to run a house under one roof. Our Dependable TV and Appliance Store ensures zero transit damage, with a replacement guarantee if anything goes wrong; delivery and installation as per your convenience and a double warranty (Official Brand Warranty along with an extended Flipkart Warranty) - rest assured, value for money is what is promised and delivered. Shop from market leaders in the country like Samsung, LG, Whirlpool, Midea, Mi, Vu, Panasonic, Godrej, Sony, Daikin, and Hitachi among many others.
                     </Typography>
                     <Typography>
-                        For certain product categories, Customers meeting the eligibility criteria will have the option to buy larger quantities. To know more on the eligibility criteria and terms and conditions, please reach out to <Link>sridharan.r@mitrahsoft.com</Link>
+                        For certain product categories, Customers meeting the eligibility criteria will have the option to buy larger quantities. To know more on the eligibility criteria and terms and conditions, please reach out to <span className="maileId">sridharan.r@mitrahsoft.com</span>
                     </Typography>
                 </Row>
 

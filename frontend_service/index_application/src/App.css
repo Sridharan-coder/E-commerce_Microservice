@@ -211,6 +211,10 @@
 
 }
 
+.productTypeDisplyer{
+  cursor: pointer;
+}
+
 .offerIcon {
   margin-right: 10px;
 }
@@ -292,4 +296,8 @@
 
 .footerIcon {
   transform: translateY(4px);
+}
+
+.footerLogoContent,.footerContent,.mailId,.mobileNumbers{
+  cursor: pointer;
 }

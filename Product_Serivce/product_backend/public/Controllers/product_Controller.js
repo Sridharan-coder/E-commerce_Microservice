@@ -71,6 +71,7 @@ const getProductById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     try {
         const p_id = Number(req.params["p_id"]);
         const product = yield (0, product_Services_1.getProductByIdDetails)(p_id);
+        // product["p_image"]=product.p_image.replace('localhost:3322', 'ksvbk2mz-3322.inc1.devtunnels.ms')
         res.status(200).json({
             success: true,
             msg: "Product fetched successfully",
@@ -86,6 +87,10 @@ const getProductByType = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     try {
         const p_type = req.params["p_type"];
         const products = yield (0, product_Services_1.getProductByTypeDetails)(p_type);
+        // const products:Array<DBInterfaces.ProductWarehouse>=productss.filter((a:DBInterfaces.ProductWarehouse) => {
+        //   a["p_image"]=a.p_image.replace('localhost:3322', 'ksvbk2mz-3322.inc1.devtunnels.ms')
+        //   return a;
+        // })
         res.status(200).json({
             success: true,
             msg: "Products fetched successfully",

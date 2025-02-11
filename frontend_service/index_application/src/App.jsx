@@ -19,6 +19,7 @@ function App() {
         <Route path='/viewcart' element={<Cart />} />
         <Route path='/payment' element={<PaymentPage />} />
         <Route path='/maintance' element={<Maintance/>}/>
+        
       </Routes>
     </>
   )

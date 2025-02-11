@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
 const { createSeller, updateSellerDetails, deleteSellerDetails, getSellerDetails, getSellerLogin } = require("../Services/seller_Services");
 
 const errorHandler = async (err, req, res, next) => {
@@ -62,6 +63,7 @@ const deleteSeller = async (req, res, next) => {
 
 const getSeller = async (req, res, next) => {
   try {
+    console.log("cookies----->",req.cookies.s_token)
     const s_id = Number(req.params["s_id"]);
     const seller = await getSellerDetails(s_id);
     res.status(200).json({
@@ -84,7 +86,19 @@ const sellerLogin = async (req, res, next) => {
     
     if (match) {
       const token=generateToken({s_emailAddress:seller.s_emailAddress,s_name:seller.s_name,s_id:seller.s_id.toString()})
-      res.status(200).json({
+      
+      // const secureCookie = true;
+      // const httpOnlyCookie = true;
+      // const cookieOptions = {
+      //   secure: secureCookie,
+      //   httpOnly: httpOnlyCookie,
+      // };
+      // const cookieString = cookie.serialize('s_token', token, cookieOptions);
+      res.cookie("s_token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite:'None'
+      }).status(200).json({
         success: true,
         message: "Login successfully",
         seller,
@@ -120,11 +134,24 @@ const generateToken=(sellerDetails)=> {
 }
 
 
+const sellerLogout=(req,res,next)=>{
+  try {
+    res.clearCookie("s_token").status(200).json({
+      success: true,
+      message: "Seller Logged-out succesfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 module.exports = {
   errorHandler,
   addSeller,
   updateSeller,
   deleteSeller,
   getSeller,
-  sellerLogin
+  sellerLogin,
+  sellerLogout
 }

@@ -1,6 +1,13 @@
-import './Maintance.css';  
+import './Maintance.css';
+import {useNavigate} from "react-router-dom"  
 
 const Maintance = () => {
+
+  const navigate=useNavigate()
+
+  const handleNavigate=()=>{
+    navigate("/seller")
+  }
 
     return (
         <div className='maintanceBody'>
@@ -27,7 +34,7 @@ const Maintance = () => {
               <p>
                 Sorry for the inconvenience. We’re performing some maintenance at the moment. If you need to, 
                 you can check on{' '}
-                <a href="/seller" className='PageNavigator'>Seller Information</a> , otherwise, 
+                <span onClick={()=>handleNavigate} className='PageNavigator'>Seller Information</span> , otherwise, 
                 we’ll be back up shortly!
               </p>
               <b>&mdash; Developer Team</b>

@@ -1,6 +1,8 @@
 package com.example.buyerStructure.configuration;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,14 +41,17 @@ public class ApplicationConfiguration {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("http://localhost:3000"); // React front-end
-		configuration.addAllowedHeader("*");
-		configuration.addAllowedMethod("*");
+    	CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3002")); // ✅ Set allowed frontend URLs
+        configuration.setAllowedHeaders(List.of("*")); // ✅ Allow all headers
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE")); // ✅ Allow necessary methods
+        configuration.setAllowCredentials(true); // ✅ Required for cookies to work
+        configuration.setExposedHeaders(List.of("Set-Cookie"));
+		
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
-	}
+	} 
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -62,7 +67,7 @@ public class ApplicationConfiguration {
 //			return http.build();
 
 			return http.csrf(customizer -> customizer.disable()).authorizeHttpRequests(request -> request
-					.requestMatchers("/user/userLogin", "/user/createUser")
+					.requestMatchers("/user/userLogin", "/user/createUser","/user/userLogout")
 					.permitAll().anyRequest().authenticated())
 //					.formLogin(Customizer.withDefaults())
 //					.httpBasic(Customizer.withDefaults())

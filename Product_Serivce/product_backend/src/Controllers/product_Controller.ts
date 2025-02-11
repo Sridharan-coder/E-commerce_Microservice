@@ -71,6 +71,7 @@ export const getProductById = async (req: Request, res: Response, next: Function
     const p_id = Number(req.params["p_id"]);
 
     const product = await getProductByIdDetails(p_id);
+    // product["p_image"]=product.p_image.replace('localhost:3322', 'ksvbk2mz-3322.inc1.devtunnels.ms')
     res.status(200).json({
       success: true,
       msg: "Product fetched successfully",
@@ -85,7 +86,13 @@ export const getProductByType = async (req: Request, res: Response, next: Functi
 
   try {
     const p_type: string = req.params["p_type"];
-    const products: DBInterfaces.ProductWarehouse = await getProductByTypeDetails(p_type);
+    const products: Array<DBInterfaces.ProductWarehouse> = await getProductByTypeDetails(p_type);
+
+    // const products:Array<DBInterfaces.ProductWarehouse>=productss.filter((a:DBInterfaces.ProductWarehouse) => {
+    //   a["p_image"]=a.p_image.replace('localhost:3322', 'ksvbk2mz-3322.inc1.devtunnels.ms')
+    //   return a;
+      
+    // })
     res.status(200).json({
       success: true,
       msg: "Products fetched successfully",

@@ -76,9 +76,9 @@ const items = [
     key: 'link',
     icon: <LinkOutlined />,
     label: (
-      <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+      <span>
         Ant Design
-      </a>
+      </span>
     ),
   },
 ];

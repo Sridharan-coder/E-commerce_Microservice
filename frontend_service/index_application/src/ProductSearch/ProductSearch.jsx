@@ -43,14 +43,14 @@ const ProductSearch = () => {
     {
       key: "logo",
       label: (
-        <a href="/" rel="noopener noreferrer">
+        <span>
           <img
             alt="logo"
             srcSet={Flipkart_logo_white}
             width={"95vw"}
             style={{ marginTop: 8 }}
           />
-        </a>
+        </span>
       ),
     },
     {
@@ -160,14 +160,14 @@ const ProductSearch = () => {
     {
       key: "logo",
       label: (
-        <a href="/" rel="noopener noreferrer">
+        <span>
           <img
             alt="logo"
             srcSet={Flipkart_logo_white}
             width={"95vw"}
             style={{ marginTop: 8 }}
           />
-        </a>
+        </span>
       ),
     },
     {
@@ -257,34 +257,57 @@ const ProductSearch = () => {
       setIsLoginOpen(true)
     }
     else if (e.key === "logout") {
-      dispatch(logoutBuyerDetails());
-      setBuyerInfo({
-        u_id: "",
-        u_name: "",
-        u_phoneNumber: "",
-        u_emailAddress: "",
-        u_password: '',
-        u_carts: [],
-        u_whitelist: [],
-        u_loggedIn: false
-      })
+      axios.get(`http://localhost:3321/user/userLogout`, {
+        withCredentials: true
+    })
+        .then((response) => {
+            dispatch(logoutBuyerDetails());
+            setBuyerInfo({
+                u_id: "",
+                u_name: "",
+                u_phoneNumber: "",
+                u_emailAddress: "",
+                u_password: '',
+                u_carts: [],
+                u_whitelist: [],
+                u_loggedIn: false,
+                u_token: ""
+            })
+            navigate("/");
+        })
+        .catch((error) => {
+            console.error(error?.response?.data?.message);
+            alert(error?.response?.data?.message);
+        })
     }
     else if (e.key === "becomeSeller") {
       axios.get("http://localhost:3001")
-          .then(response => {
-              console.log(response)
-              if (response.status === 200)
-                  window.location.href = "http://localhost:3001/seller"
-              else {
-                  console.log(response)
-                  alert("Something went Wrong")
-              }
-          })
-          .catch(error => navigate("/maintance"))
-  }
-  else if (e.key === "cart") {
+        .then(response => {
+          if (response.status === 200)
+            window.location.href = "http://localhost:3001/seller"
+          else {
+            alert("Something went Wrong")
+          }
+        })
+        .catch(error => navigate("/maintance"))
+    }
+    else if (e.key === "cart") {
       navigate("/viewcart");
-  }
+    }
+    else if (e.key === "myProfile") {
+      axios.get("http://localhost:3002")
+        .then(response => {
+          if (response.status === 200)
+            window.location.href = `http://localhost:3002/buyer?id=${buyerInfo.u_id}`
+          else {
+            alert("Something went Wrong")
+          }
+        })
+        .catch(error => navigate("/maintance"))
+    }
+    else if(e.key==="logo"){
+      navigate("/")
+    }
   };
 
 
@@ -312,7 +335,7 @@ const ProductSearch = () => {
       .then((response) => {
         dispatch(loginBuyerDetails(response.data.user));
         alert(response.data.message);
-        setBuyerInfo({ ...response.data.user, u_loggedIn: true });
+        setBuyerInfo({ ...response.data.user,u_token:response.data.token, u_loggedIn: true });
         setIsLoginOpen(false);
         navigate("/");
       })

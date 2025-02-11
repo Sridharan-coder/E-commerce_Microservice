@@ -51,14 +51,14 @@ function Home() {
         {
             key: "logo",
             label: (
-                <a href="/#" rel="noopener noreferrer">
+                <span>
                     <img
                         alt="logo"
                         srcSet={Flipkart_Logo_1}
                         width={"95vw"}
                         style={{ marginTop: 8 }}
                     />
-                </a>
+                </span>
             ),
         },
         {
@@ -169,14 +169,14 @@ function Home() {
         {
             key: "logo",
             label: (
-                <a href="/" rel="noopener noreferrer">
+                <span>
                     <img
                         alt="logo"
                         srcSet={Flipkart_Logo_1}
                         width={"95vw"}
                         style={{ marginTop: 8 }}
                     />
-                </a>
+                </span>
             ),
         },
         {
@@ -244,28 +244,37 @@ function Home() {
             form.resetFields();
         }
         else if (e.key === "logout") {
-            dispatch(logoutBuyerDetails());
-            setBuyerInfo({
-                u_id: "",
-                u_name: "",
-                u_phoneNumber: "",
-                u_emailAddress: "",
-                u_password: '',
-                u_carts: [],
-                u_whitelist: [],
-                u_loggedIn: false,
-                i_token: ""
+
+            // navigate("/")
+            axios.get(`http://localhost:3321/user/userLogout`, {
+                withCredentials: true
             })
-            navigate("/")
+                .then((response) => {
+                    dispatch(logoutBuyerDetails());
+                    setBuyerInfo({
+                        u_id: "",
+                        u_name: "",
+                        u_phoneNumber: "",
+                        u_emailAddress: "",
+                        u_password: '',
+                        u_carts: [],
+                        u_whitelist: [],
+                        u_loggedIn: false,
+                        u_token: ""
+                    })
+                    navigate("/");
+                })
+                .catch((error) => {
+                    console.error(error?.response?.data?.message);
+                    alert(error?.response?.data?.message);
+                })
         }
         else if (e.key === "becomeSeller") {
             axios.get("http://localhost:3001")
                 .then(response => {
-                    console.log(response)
                     if (response.status === 200)
                         window.location.href = "http://localhost:3001/seller"
                     else {
-                        console.log(response)
                         alert("Something went Wrong")
                     }
                 })
@@ -273,6 +282,20 @@ function Home() {
         }
         else if (e.key === "cart") {
             navigate("/viewcart");
+        }
+        else if (e.key === "myProfile") {
+            axios.get("http://localhost:3002")
+                .then(response => {
+                    if (response.status === 200)
+                        window.location.href = `http://localhost:3002/buyer?id=${buyerInfo.u_id}&token=${buyerInfo.u_token}`
+                    else {
+                        alert("Something went Wrong")
+                    }
+                })
+                .catch(error => navigate("/maintance"))
+        }
+        else if(e.key==="logo"){
+            navigate("/")
         }
     };
 
@@ -297,9 +320,9 @@ function Home() {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                withCredentials: true
             })
             .then((response) => {
-                console.log("response -->", response)
                 dispatch(loginBuyerDetails({ ...response.data.user, u_token: response.data.token }));
                 alert(response.data.message);
                 setBuyerInfo({ ...response.data.user, u_loggedIn: true, u_token: response.data.token });
@@ -307,8 +330,8 @@ function Home() {
                 navigate("/");
             })
             .catch((error) => {
-                console.error(error.response.data.message);
-                alert(error.response.data.message);
+                console.error(error?.response?.data?.message);
+                alert(error?.response?.data?.message);
             });
     };
 
@@ -334,7 +357,6 @@ function Home() {
 
     useEffect(() => {
         async function updateData() {
-            console.log("token   ---->", buyerInfo.u_token);
             if (buyerInfo.u_loggedIn) {
                 await axios.get(`http://localhost:3321/user/getUserDetals/${buyerInfo.u_id}`
                     , {
@@ -346,19 +368,30 @@ function Home() {
                     }
                 )
                     .then((response) => {
-                        dispatch(loginBuyerDetails({ ...response.data.user, u_loggedIn: true }));
-                        setBuyerInfo({ ...response.data.user, u_loggedIn: true });
+                        dispatch(loginBuyerDetails({ ...response.data.user, u_token: response.data.token, u_loggedIn: true }));
+                        setBuyerInfo({ ...response.data.user, u_token: response.data.token, u_loggedIn: true });
 
                     })
                     .catch((error) => {
-                        console.log(error);
                         alert(error.message);
+                        dispatch(logoutBuyerDetails());
+                        setBuyerInfo({
+                            u_id: "",
+                            u_name: "",
+                            u_phoneNumber: "",
+                            u_emailAddress: "",
+                            u_password: '',
+                            u_carts: [],
+                            u_whitelist: [],
+                            u_loggedIn: false,
+                            u_token: ""
+                        });
                     });
             }
         }
         updateData()
-        
-    // eslint-disable-next-line
+
+        // eslint-disable-next-line
     }, [])
 
 
@@ -372,7 +405,6 @@ function Home() {
                     mode="horizontal"
                     items={items}
                     className="header-menu"
-                    activeBarHeight={0}
                 />
                 :
                 <Menu
@@ -381,8 +413,6 @@ function Home() {
                     mode="horizontal"
                     items={items1}
                     className="header-menu"
-                    activeBarHeight={0}
-
 
                 />
             }

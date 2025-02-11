@@ -85,9 +85,9 @@ import { LOGINBUYER, LOGOUTBUYER } from "../Action_Type/ActionType"
 
 
 export const loginBuyerDetails = (data) => {
-    return { type: LOGINBUYER, payload: data }
+    return { type: LOGINBUYER, payload: data }  
 }
 
-export const logoutBuyerDetails = () => {
-    return { type: LOGOUTBUYER, payload: false }
+export const logoutBuyerDetails = (data) => {
+    return { type: LOGOUTBUYER }
 }

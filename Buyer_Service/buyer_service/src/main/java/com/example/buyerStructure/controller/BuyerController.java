@@ -2,6 +2,7 @@ package com.example.buyerStructure.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.buyerStructure.dao.BuyerDao;
 import com.example.buyerStructure.entity.BuyerDetails;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 
 @CrossOrigin(
 	    origins = {
-	        "http://localhost:3000"
+	        "http://localhost:3000",
+	        "http://localhost:3002"
 	        },
 	    methods = {
 	                RequestMethod.OPTIONS,
@@ -42,8 +46,8 @@ public class BuyerController {
 	}
 
 	@GetMapping("/getUserDetals/{u_id}")
-	public ResponseEntity<?> getUser(@PathVariable Integer u_id) {
-		System.err.println("user Controller line 45 --> " + u_id);
+	public ResponseEntity<?> getUser(@PathVariable Integer u_id,@CookieValue("u_token") String u_token) {
+		System.err.println("user Controller line 45 --> " + u_token);
 		return buyerDao.getUser(u_id);
 	}
 
@@ -58,8 +62,13 @@ public class BuyerController {
 	}
 
 	@PostMapping("/userLogin")
-	public ResponseEntity<?> userLogin(@RequestBody BuyerDetails buyerDetails) {
+	public ResponseEntity<?> userLogin(@RequestBody BuyerDetails buyerDetails,HttpServletResponse response) {
 		System.err.println("user Controller line 61 --> " + buyerDetails.toString());
-		return buyerDao.userLogin(buyerDetails);
+		return buyerDao.userLogin(buyerDetails,response);
+	}
+	
+	@GetMapping("/userLogout")
+	public ResponseEntity<?> userLogout(HttpServletResponse response){
+		return buyerDao.userLogout(response);
 	}
 }

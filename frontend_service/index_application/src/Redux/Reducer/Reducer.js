@@ -60,10 +60,10 @@ export const Reducer = (state = intialData, action) => {
 
     switch (action.type) {
         case LOGINBUYER:
-            return { ...state, buyerAuthentication: { ...state.buyerAuthentication, ...action.payload, u_loggedIn: true } };
+            return { buyerAuthentication: { ...state.buyerAuthentication, ...action.payload, u_loggedIn: true } };
         case LOGOUTBUYER:
             return {
-                ...state, buyerAuthentication: {
+                buyerAuthentication: {
                     u_id: "",
                     u_name: "",
                     u_phoneNumber: "",
@@ -71,8 +71,8 @@ export const Reducer = (state = intialData, action) => {
                     u_password: '',
                     u_carts: [],
                     u_whitelist: [],
-                    u_loggedIn: false
-
+                    u_loggedIn: false,
+                    u_token:''
                 }
             };
         default:

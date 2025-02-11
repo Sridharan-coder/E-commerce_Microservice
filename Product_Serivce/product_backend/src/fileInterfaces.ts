@@ -2,6 +2,7 @@
 export namespace DBInterfaces {
 
     export interface ProductWarehouse {
+        product: any;
         _id?: string;
         p_id: number;
         p_name: string;

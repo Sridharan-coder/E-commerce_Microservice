@@ -1,11 +1,11 @@
-import { Button, Col, Form, Input, Menu, Modal, Row, Steps, Typography } from "antd";
+import { Button, Col, Form, Input, Menu, Modal, Row} from "antd";
 import Flipkart_logo_white from "../Assest/Flipkart_logo_white.png"
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { loginBuyerDetails } from "../Redux/Action_Create/ActionCreate";
-
+import {useNavigate} from "react-router-dom"
 import { load } from '@cashfreepayments/cashfree-js';
 import { FaBell, FaTruck } from "react-icons/fa6";
 import { IoStar } from "react-icons/io5";
@@ -15,6 +15,8 @@ const PaymentPage = () => {
 
     const location = useLocation()
 
+    const navigate=useNavigate()
+
     const [productDetails, SetProductDetails] = useState(location.state.productDetails || []);
 
     const buyerInfo = useSelector(detail => detail.buyerAuthentication);
@@ -23,8 +25,8 @@ const PaymentPage = () => {
 
     const [form] = Form.useForm();
     const [form1] = Form.useForm();
-    const [form2] = Form.useForm();
 
+    // eslint-disable-next-line
     const [buyerDetail, SetBuyerDetail] = useState(buyerInfo)
 
     const [buyerAddress, setBuyerAddress] = useState({})
@@ -35,6 +37,7 @@ const PaymentPage = () => {
 
 
     const [orderPrice, setOrderPrice] = useState([])
+    // eslint-disable-next-line
     const [discount, setDiscount] = useState(0)
     const [totalPrice, setTotalPrice] = useState(0)
 
@@ -49,15 +52,17 @@ const PaymentPage = () => {
         {
             key: 'logo',
             label: (
-                <a href="/#" rel='noopener noreferrer'>
+                <span>
                     <img alt="logo" srcSet={Flipkart_logo_white} width={"95vw"} style={{ marginTop: 8 }} />
-                </a>
+                </span>
             ),
         }
     ];
 
     const onClick = (e) => {
-        console.log(e.key);
+        if(e.key==="logo"){
+            navigate("/")
+        }
 
     }
 
@@ -70,7 +75,7 @@ const PaymentPage = () => {
             },
         })
             .then(response => {
-                dispatch(loginBuyerDetails(response.data.user))
+                dispatch(loginBuyerDetails({...response.data.user,u_token:response.data.token}))
                 alert(response.data.message);
                 setIsLogin(true);
                 setIsAddress(false);
@@ -96,7 +101,7 @@ const PaymentPage = () => {
 
 
 
-
+    // eslint-disable-next-line
     const handleDeleteCartToUser = async (value) => {
         if (productDetails.length) {
 
@@ -177,7 +182,7 @@ const PaymentPage = () => {
 
     const getSessionId = async () => {
         try {
-            const res = await axios.get(`http://localhost:3324/payment/${totalPrice}`);
+            const res = await axios.get(`http://localhost:3323/payment/${totalPrice}`);
             if (res.data &&( res.data.payment_session_id||res.data.paymentSessionId)) {
                 return {orders:res.data.orderId||res.data.order_id,sessionId:res.data.payment_session_id || res.data.paymentSessionId};
             }
@@ -189,10 +194,9 @@ const PaymentPage = () => {
     const verifyPayment = async (orderId) => {
         try {
 
-            const res = await axios.post("http://localhost:3324/verify", { orderId });
+            const res = await axios.post("http://localhost:3323/verify", { orderId });
             if (res && res.data) {
                 alert("Payment verified");
-                console.log(res);
 
                 productDetails.map((item, index) => handleStocks(item, index))
             }
@@ -211,7 +215,6 @@ const PaymentPage = () => {
                 redirectTarget: "_modal",
             };
             cashfree.checkout(checkoutOptions).then(async () => {
-                console.log("Payment initialized");
                 verifyPayment(orders);
             });
         } catch (error) {
@@ -226,7 +229,7 @@ const PaymentPage = () => {
             setOrderPrice([...orderPrice, item.p_price])
         })
         form.resetFields();
-
+// eslint-disable-next-line
     }, [])
 
     useEffect(() => {
@@ -540,7 +543,6 @@ const PaymentPage = () => {
                                         </Row>
                                         {productDetails.map((item, index) => {
                                             return (
-                                                <>
                                                     <Row className="cartInfo" key={item.p_id}>
                                                         <Col span={4}>
                                                             <img src={item.p_image} alt={item.p_name} width={120} height={120} />
@@ -548,10 +550,10 @@ const PaymentPage = () => {
                                                         <Col span={14}>
                                                             <Row>{item.p_name}</Row>
                                                             <Row>Seller Id :
-                                                                {item.s_ids.map(vendor => {
+                                                                {item.s_ids.map((vendor,index) => {
                                                                     return (
 
-                                                                        <Row>{vendor}</Row>
+                                                                        <Row key={vendor+''+index}>{vendor}</Row>
                                                                     )
                                                                 })}
                                                             </Row>
@@ -579,7 +581,6 @@ const PaymentPage = () => {
                                                             </Col>
                                                         </Row>
                                                     </Row>
-                                                </>
                                             )
                                         })}
 
